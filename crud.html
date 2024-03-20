@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>config.php</h1>
+    <pre>&lt;?php
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "dhruv";
+
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+    if (!$conn) {
+        echo "not connected!";
+    }
+    ?&gt;</pre>
+
+
+
+    <br><br>
+    <h1>index.php</h1> <br><br><br>
+    <pre>&lt;!DOCTYPE html&gt;
+        &lt;html lang="en"&gt;
+        &lt;head&gt;
+            &lt;meta charset="UTF-8"&gt;
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+            &lt;title&gt;log in &lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;form action="log.php" method="POST"&gt;
+                &lt;center&gt;
+                    &lt;table&gt;
+                        &lt;thead&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;
+                                    &lt;h1&gt;Log In &lt;/h1&gt;
+                                &lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;td&gt;Enter your name:&lt;/td&gt;
+                            &lt;td&gt;&lt;input type="text" name="user"&gt;&lt;/td&gt;
+                            &lt;tr&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;Enter Your Password:&lt;/td&gt;
+                                &lt;td&gt; &lt;input type="password" name="pass"&gt; &lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;tr&gt;
+                                &lt;td colspan="2"&gt;
+                                    &lt;input type="submit" value="login" name="submit"&gt;
+                                &lt;/td&gt;
+                                &lt;td colspan="2"&gt;
+                                    &lt;input type="reset" value="clear"&gt;
+                                &lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;don't have any account &lt;a href="register.php"&gt;Sign Up Now&lt;/a&gt;&lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;/tr&gt;
+                        &lt;/thead&gt;
+                    &lt;/table&gt;
+                &lt;/center&gt;
+            &lt;/form&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;</pre>
+
+    <br>
+    <h1>log.php</h1> <br><br>
+
+    <pre>&lt;?php
+
+            include'config.php';
+            $username = $_POST['user'];
+            $password = $_POST['pass'];
+            
+            
+            //to prevent from mysqli injection
+            $username = stripcslashes($username);
+            $password = stripcslashes($password);
+            $username = mysqli_real_escape_string($conn,$username);
+            $password = mysqli_real_escape_string($conn,$password);
+            
+            
+            $sql= "SELECT * FROM register2 WHERE fname='$username' and pass = '$password'";
+            
+            $result = mysqli_query($conn,$sql);
+            $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+            $count = mysqli_num_rows($result);
+            
+            if($count == 1){
+                header('location:view.php');
+            }else{
+                echo"&lt;h1&gt;Log In Failed.Invalid Username or Password.&lt;/h1&gt;";
+            }
+            
+            ?></pre>
+
+
+    <br><br>
+    <h1>register.php</h1>
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="en"&gt;
+
+    &lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;register&lt;/title&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+    &lt;form action="insert.php" method="post" &gt;
+    &lt;center&gt;
+    &lt;table&gt;
+    &lt;thead&gt;
+    &lt;tr&gt;
+    &lt;td&gt;
+    Enter your name:
+    &lt;/td&gt;
+    &lt;td&gt;
+    &lt;input type="text" name="fname"&gt;
+    &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+    &lt;td&gt;Enter your email:&lt;/td&gt;
+    &lt;td&gt;&lt;input type="email" name="email"&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+    &lt;td&gt;Enter your password&lt;/td&gt;
+    &lt;td&gt;&lt;input type="password" name="pass"&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+    &lt;td&gt;enter your mobile no.&lt;/td&gt;
+    &lt;td&gt; &lt;input type="number" name="mob"&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+    &lt;td colspan="2"&gt;&lt;input type="submit" value="register" name="submit"&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;input type="reset" value="clear" id=""&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+    &lt;td&gt; &lt;h6&gt;&lt;/h6&gt;Already Have An Account &lt;a href="index.php"&gt;log in&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;/table&gt;
+    &lt;/center&gt;
+    &lt;/form&gt;
+    &lt;/body&gt;
+
+    &lt;/html&gt;
+    </pre>
+
+    <br><br><br>
+    <h1>insert.php</h1>
+    <pre>
+            &lt;?php
+            
+            include 'config.php';
+            if (isset($_POST['submit'])) {
+                $fname = $_POST['fname'];
+                $email = $_POST['email'];
+                $pass = $_POST['pass'];
+                $mob = $_POST['mob'];
+            
+                $sql = "INSERT INTO register2(fname,email,pass,mob) VALUES ('$fname','$email','$pass','$mob')";
+                $result = mysqli_query($conn, $sql);
+            
+                if ($result == TRUE) {
+                    header('location:index.php');
+                }
+            }
+            
+            ?&gt;
+        </pre>
+    <br><br>
+    <h1>view.php</h1>
+    <pre>
+            &lt;?php
+            
+            include 'config.php';
+            $sql = "SELECT * FROM register2";
+            $result = mysqli_query($conn , $sql);
+            
+            ?&gt;
+            
+            &lt;!DOCTYPE html&gt;
+            &lt;html lang="en"&gt;
+            &lt;head&gt;
+                &lt;meta charset="UTF-8"&gt;
+                &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+                &lt;title&gt; view table&lt;/title&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+                &lt;center&gt;
+                   &lt;table border="1"&gt;
+                    &lt;thead&gt;
+                        &lt;th&gt;id&lt;/th&gt;
+                        &lt;th&gt;name&lt;/th&gt;
+                        &lt;th&gt;email&lt;/th&gt;
+                        &lt;th&gt;password&lt;/th&gt;
+                        &lt;th&gt;mobile number&lt;/th&gt;
+                        &lt;th&gt;delete&lt;/th&gt;
+                        &lt;th&gt;edit&lt;/th&gt;
+                    &lt;/thead&gt;
+                    &lt;tbody&gt;
+                        &lt;?php
+                        if(mysqli_num_rows($result)>0){
+                            while($row=mysqli_fetch_assoc($result)){            
+                         ?&gt;
+                        &lt;tr&gt;
+                            &lt;td&gt;&lt;?php echo $row['id'] ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row['fname'] ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row['email'] ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row['pass'] ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row['mob'] ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;a href="delete.php?id=&lt;?php echo$row['id']; ?&gt;"&gt;DELETE&lt;/a&gt;&lt;/td&gt;   
+                            &lt;td&gt;&lt;a href="update.php?id=&lt;?php echo$row['id']; ?&gt;"&gt;EDIT&lt;/a&gt;&lt;/td&gt;
+                        &lt;/tr&gt;
+                        &lt;?php 
+                         }
+                         
+                         }else{
+                            echo"&lt;tr&gt; &lt;td colspan='7'&gt; no data &lt;/td&gt;&lt;/tr&gt;";
+                         } 
+                         ?&gt;
+                          
+                        
+                    &lt;/tbody&gt;
+                   &lt;/table&gt;
+                &lt;/center&gt;
+            &lt;/body&gt;
+            &lt;/html&gt;
+        </pre>
+    <br><br><br>
+    <h1>delete.php</h1>
+
+    <pre>
+            &lt;?php
+            
+            include 'config.php';
+            if(isset($_GET['id'])){
+                $uid = $_GET['id'];
+                $sql = "DELETE FROM register2 WHERE id=$uid";
+                $result = mysqli_query($conn,$sql);
+                
+                if($result == TRUE){
+                    header('location:view.php');
+                }
+            }
+            
+            ?&gt;
+        </pre>
+    <br><br><br>
+    <h1>update.php</h1>
+
+    <pre>
+        &lt;?php
+
+        include 'config.php';
+
+
+        if (isset ($_POST['update'])) {
+            $fname = $_POST['fname'];
+            $email = $_POST['email'];
+            $pass = $_POST['pass'];
+            $mob = $_POST['mob'];
+            $uid = $_POST['uid'];
+
+            $record = "UPDATE register2 SET fname = '$fname', email = '$email', pass = '$pass', mob = '$mob' WHERE id = '$uid'";
+            $data = mysqli_query($conn, $record);
+
+            if ($data == TRUE) {
+                header('Location: view.php');
+
+            }
+        }
+
+
+
+
+
+        if (isset ($_GET['id'])) {
+            $uid = $_GET['id'];
+            $sql = "SELECT * FROM register2 WHERE id = $uid ";
+            $result = mysqli_query($conn, $sql);
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $fname = $row['fname'];
+                    $email = $row['email'];
+                    $pass = $row['pass'];
+                    $mob = $row['mob'];
+                    $uid = $row['id'];
+                }
+            }
+        }
+
+
+        ?&gt;
+
+
+        &lt;!DOCTYPE html&gt;
+        &lt;html lang="en"&gt;
+        
+        &lt;head&gt;
+            &lt;meta charset="UTF-8"&gt;
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+            &lt;title&gt;update&lt;/title&gt;
+        &lt;/head&gt;
+        
+        &lt;body&gt;
+            &lt;form action="" method="post"&gt;
+                &lt;center&gt;
+                    &lt;table&gt;
+                        &lt;thead&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;
+                                    Enter your name:
+                                &lt;/td&gt;
+                                &lt;input type="hidden" name="uid" value="&lt;?php echo $uid; ?&gt;" id=""&gt;
+                                &lt;td&gt;
+                                    &lt;input type="text" value="&lt;?php echo $fname; ?&gt;" name="fname"&gt;
+                                &lt;/td&gt;
+                            &lt;/tr&gt;
+        
+                            &lt;tr&gt;
+                                &lt;td&gt;Enter your email:&lt;/td&gt;
+                                &lt;td&gt;&lt;input type="email" value="&lt;?php echo $email; ?&gt;" name="email"&gt;&lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;Enter your password&lt;/td&gt;
+                                &lt;td&gt;&lt;input type="password" value="&lt;?php echo $pass; ?&gt;" name="pass"&gt;&lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;tr&gt;
+                                &lt;td&gt;enter your mobile no.&lt;/td&gt;
+                                &lt;td&gt; &lt;input type="number" value="&lt;?php echo $mob; ?&gt;" name="mob"&gt;&lt;/td&gt;
+                            &lt;/tr&gt;
+                            &lt;tr&gt;
+                                &lt;td colspan="2"&gt;&lt;input type="submit" value="Update" name="update"&gt;&lt;/td&gt;
+                                &lt;td&gt;&lt;input type="reset" value="clear" id=""&gt;&lt;/td&gt;
+                            &lt;/tr&gt;
+        
+                        &lt;/thead&gt;
+                    &lt;/table&gt;
+                &lt;/center&gt;
+            &lt;/form&gt;&lt;/body&gt;&lt;/html&gt;
+    </pre>
+</body>
+
+</html>
+
+</body>
+
+</html>
